@@ -1,0 +1,118 @@
+.modal-title {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.modal-content {
+  max-width: 1000px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.label-icon > label {
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+
+}
+
+.form-field > label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.button-label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.header-label {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.category-field-input {
+  width: 200px; /* Defina a largura desejada */
+}
+
+.quick-reply-input {
+  color: #495057; /* Cor de texto de botões .btn-secondary no Bootstrap */
+  background-color: #e9ecef; /* Cor de fundo de botões .btn-secondary no Bootstrap */
+  border-color: #ced4da; /* Cor de borda de botões .btn-secondary no Bootstrap */
+  padding: .25rem .5rem; /* Padding de botões .btn-sm no Bootstrap */
+  line-height: 1.5; /* Altura da linha de botões .btn no Bootstrap */
+  border-radius: .2rem; /* Borda arredondada de botões .btn no Bootstrap */
+  font-weight: 400; /* Espessura da fonte de botões .btn no Bootstrap */
+  margin-bottom: 1rem; /* Margem inferior de botões .mb-3 no Bootstrap */
+}
+
+.quick-reply-remove {
+  margin-left: 1px;
+  margin-top: 3px;
+}
+
+.form-select {
+  width: auto;
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  margin: 2px;
+  -webkit-box-align: center;
+  align-items: center;
+  transition: box-shadow 0.1s ease-in-out 0s;
+  box-sizing: border-box;
+  border: 0px;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 600;
+  direction: ltr;
+  border-radius: 2px;
+  padding: 0px 8px;
+  min-width: calc(16px + 1ch);
+  height: 20px;
+  line-height: 1.66667;
+  font-size: 12px;
+  background-color: rgb(233, 235, 237);
+  color: rgb(73, 84, 92);
+}
+
+/* Mobile styles */
+@media (max-width: 576px) {
+  .form-field,
+  .form-group {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .form-field > label,
+  .form-group > label {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-field > div,
+  .form-group > div {
+    width: 100%;
+  }
+}
+
+/* Tablet and up styles */
+@media (min-width: 577px) {
+  .form-field,
+  .form-group {
+    flex-direction: row;
+  }
+}

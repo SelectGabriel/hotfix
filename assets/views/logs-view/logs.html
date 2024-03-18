@@ -1,0 +1,86 @@
+<div class="container mt-4 mb-4" ng-show="activeTab === 3" ng-controller="logs">
+  <!-- Restante do código -->
+  <h2 class="h2 text-center mb-5">Logs</h2>
+  <form ng-submit="filterLogs()">
+    <div class="mb-3">
+      <label for="startDate" class="form-label">Data de início</label>
+      <input type="date" class="form-control" id="startDate" ng-model="startDate">
+    </div>
+    <div class="mb-3">
+      <label for="endDate" class="form-label">Data de fim</label>
+      <input type="date" class="form-control" id="endDate" ng-model="endDate">
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+  </form>
+
+  <div class="col-md-12" ng-if="logs.length">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col" class="cursor-pointer" ng-click="orderByField('name')">
+            Usuário <i class="fa-solid fa-sort"></i>
+          </th>
+          <th scope="col" class="cursor-pointer" ng-click="orderByField('status')">
+            Data e Hora <i class="fa-solid fa-sort"></i>
+          </th>
+          <th scope="col" class="cursor-pointer" ng-click="orderByField('category')">
+            Ação <i class="fa-solid fa-sort"></i>
+          </th>
+          <th scope="col">Template</th>
+          <th scope="col">Tags</th>
+          <th scope="col">Quantidade de Clientes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="log in logs track by $index">
+          <td>{{ log.attributes.usuario }}</td>
+          <td>{{ formatDateToLocal(log.created_at) }}</td>
+          <td>{{ log.attributes.action }}</td>
+          <td>{{ log.attributes.template }}</td>
+          <td>{{ log.attributes.tags ? log.attributes.tags.join(', ') : '-' }}</td>
+          <td>
+            <a ng-click="showDisparo(log.id)" href="#" style="text-decoration: underline; color: blue;">
+              {{ log.attributes.numberOfClients }}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="showDisparoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="showDisparoModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Nome</th>
+                  <th scope="col">WhatsApp</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="disparo in disparos track by $index">
+                  <td>{{disparo.attributes.nome}}</td>
+                  <td>{{disparo.attributes.telefone}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

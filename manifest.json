@@ -1,0 +1,50 @@
+{
+  "name": "Via WhatsApp Ativo",
+  "author": {
+    "name": "Viaconsulting",
+    "email": "suporte@viaconsulting.com.br"
+  },
+  "defaultLocale": "pt-br",
+  "private": true,
+  "location": {
+    "support": {
+      "nav_bar": "assets/views/iframe.html",
+      "user_sidebar": {
+        "url": "assets/views/iframe.html",
+        "size": {
+          "width": "100%",
+          "height": "480px"
+        },
+        "flexible": true
+      }
+    }
+  },
+  "domainWhitelist": [
+    "https://app.smooch.io"
+  ],
+  "parameters": [
+    {
+      "name": "suncoAppId",
+      "type": "text"
+    },
+    {
+      "name": "suncoEncodedAccessToken",
+      "type": "text",
+      "secure": true
+    },
+    {
+      "name": "groupTemplatesId",
+      "type": "text"
+    },
+    {
+      "name": "groupDisparoId",
+      "type": "text"
+    },
+    {
+      "name": "groupLogsId",
+      "type": "text"
+    }
+  ],
+  "version": "1.0",
+  "frameworkVersion": "2.0"
+}

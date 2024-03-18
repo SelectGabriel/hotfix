@@ -1,0 +1,1 @@
+var angularjs = angular.module('angularjs', ['ui.utils.masks'])

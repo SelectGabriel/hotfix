@@ -1,0 +1,185 @@
+<div class="mt-4 mb-4" ng-controller="disparo" ng-show="isDisparoPermitted">
+  <h2 class="h2 text-center mb-5">Envio de Mensagem Ativa</h2>
+  <div class="row">
+    <form ng-show="integrationNumbers.length > 0 " id="formulario" name="formulario" class="col"
+      ng-submit="bodySubmit(tipoDisparo)" novalidate>
+
+      <div class="form-group mb-3">
+        <label for="integrationNumber" class="mb-1">Selecione o WhatsApp</label>
+        <select ng-class="!isUserSidebar ? 'form-control w-50' : 'form-select'" ng-model="integrationNumber"
+          ng-options="integration.id as integration.displayName for integration in integrationNumbers"
+          ng-change="loadTemplatesByIntegrationNumber(integrationNumber)" required></select>
+      </div>
+
+      <div ng-show="templates.length > 0" class="form-group mb-3">
+        <label for="integrationNumber" class="mb-1">Selecione o Template</label>
+        <select ng-change="editComponents(templateType)" ng-class="!isUserSidebar ? 'form-control w-50' : 'form-select'"
+          ng-model="templateType" ng-options="template as template.name for template in templates | orderBy:'name'"
+          required></select>
+      </div>
+
+      <div class="form-group mb-3" ng-show="templateType && !isUserSidebar">
+        <p class="mb-2">Selecione o tipo do Disparo</p>
+        <input type="radio" id="disparo-individual" ng-disabled="radioDisabled === 'individual' || disparosDisabled"
+          ng-model="tipoDisparo" value="individual">
+        <label for="disparo-individual">Individual</label>
+        <input type="radio" id="disparo-planilha" ng-disabled="radioDisabled === 'planilha' || disparosDisabled"
+          ng-model="tipoDisparo" value="planilha">
+        <label for="disparo-planilha">Planilha</label>
+        <input type="radio" id="disparo-planilha" ng-disabled="radioDisabled === 'tags' || disparosDisabled"
+          ng-model="tipoDisparo" value="tags">
+        <label for="disparo-tags">Tags</label>
+        <a href="#" ng-if="tipoDisparo === 'planilha'" ng-click="downloadTemplateCsvFile()" class="link-primary"
+          id="templateExport">(download template)</a>
+      </div>
+
+      <div ng-if="tipoDisparo !== 'planilha'">
+
+        <div class="form-group" ng-if="regexArr.length > 0" id="components">
+          <div ng-repeat="regex in regexArr" class="mb-2">
+            <label for="component0" class="mb-1">Componente: {{$index + 1}}</label>
+            <input type="text" id="component{{$index}}" name="component{{$index}}" class="form-control w-75 components"
+              ng-change="replaceStr(templateType, regexArr, components)" ng-model="components['component' + $index]"
+              required />
+            <small style="color:red"
+              ng-show="formulario.component{{$index}}.$invalid && formulario.component{{$index}}.$touched">campo
+              obrigatório</small>
+          </div>
+        </div>
+
+        <div class="form-group mb-3" ng-if="tipoDisparo === 'individual'">
+          <p>Telefone Destino:</p>
+          <div class="input-group" style="width: 200px">
+            <span class="input-group-text">+55</span>
+            <input type="text" class="form-control" ng-model="telefone" ui-br-phone-number-mask="areaCode"
+              ng-change="updateTelefone(telefone)" name="telefone" id="telefone" placeholder="(00) 00000-0000"
+              minlength="11" required>
+          </div>
+          <span class="d-block" style="color: red">
+            <small ng-show="formulario.telefone.$error.required && formulario.telefone.$touched">campo
+              obrigatório</small>
+            <small ng-show="formulario.telefone.$error.minlength">número inválido</small>
+          </span>
+        </div>
+
+      </div>
+
+      <div class="row form-group mb-3" ng-if="tipoDisparo === 'planilha'">
+        <div>
+          <input type="file" ng-model="file" class="col" name="csvfile" id="uploadfile" accept=".csv"
+            onchange="angular.element(this).scope().getCsvData(this)" valid-file>
+        </div>
+        <small style="color: red" ng-show="formulario.csvfile.$error.validFile">envio de arquivo obrigatório</small>
+        <small style="color: red" ng-show="formulario.csvfile.$error.csvLength">arquivo inválido</small>
+      </div>
+
+      <div class="row form-group mb-3" ng-if="tipoDisparo === 'tags'">
+        <div class="col-md-6">
+          <label for="searchTags" class="mb-1">Tags</label>
+          <input type="text" class="form-control" ng-model="searchText" ng-change="fetchTags(searchText)"
+            name="searchTags" id="searchTags" ng-focus="onFocus()" style="width: 100%;" />
+        </div>
+        <div class="col-md-6 no-padding" ng-show="tagsList.length">
+          <div class="tags" ng-repeat="tag in tagsList track by $index">
+            <span>{{tag}}</span>
+            <div ng-click="removeTag($index)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12"
+                aria-hidden="true">
+                <path stroke="currentColor" stroke-linecap="round" d="M3 9l6-6m0 6L3 3"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" ng-show="showTagsResult && tipoDisparo === 'tags'" style="margin-bottom: 10px;">
+        <select class="form-select" size="5" ng-model="selectedResult">
+          <option ng-repeat="result in tagsResult" ng-value="result.name" ng-click="updateTagsList(result.name)">
+            {{result.name}}</option>
+        </select>
+        <div class="col-md-6">
+          <button type="button" class="btn btn-close" ng-click="hideTagsResult()"></button>
+        </div>
+      </div>
+
+      <div class="row" ng-show="templateType && !isUserSidebar && tipoDisparo === 'tags'" style="margin-bottom: 10px;">
+        <label for="includeOptOut">
+          <input id="includeOptOut" type="checkbox" ng-model="includeOptOut" />
+          Incluir opt-out
+        </label>
+      </div>
+
+      <button type="submit" ng-if="tipoDisparo !== 'tags'" ng-disabled="formulario.$invalid"
+        class="btn btn-primary col"> Enviar automação </button>
+      <button type="button" ng-if="tipoDisparo === 'tags'" class="btn btn-success col"
+        ng-click="searchUsersByTag()">Buscar Clientes</button>
+      <div ng-if="clientsCount && tipoDisparo === 'tags'">
+        <p>Quantidade de clientes selecionados:</p>
+        <p>
+          <a href="#">
+            <span ng-click="confirmClientsModal()" class="cursor-pointer"
+              style="text-decoration: underline; color: blue;">{{clientsCount}}</span>
+          </a>
+        </p>
+      </div>
+
+      <div id="confirmClientsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Fechar">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="col-md-12">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nome</th>
+                      <th scope="col">WhatsApp</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="client in clientsList track by $index">
+                      <td>{{client.name}}</td>
+                      <td>{{client.phone}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row">
+                <div class="col-md-6" style="display: flex; justify-content: flex-start;">
+                  <button type="button" class="btn btn-primary" ng-if="clientsPreviousPage"
+                    ng-click="toggleClientsPage('previous')">
+                    Anterior
+                  </button>
+                </div>
+                <div class="col-md-6" style="display: flex; justify-content: flex-end;">
+                  <button type="button" class="btn btn-primary" ng-if="clientsNextPage"
+                    ng-click="toggleClientsPage('next')">
+                    Próxima
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary col" ng-disabled="formulario.$invalid">
+                Enviar Automação
+              </button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+
+    <section class="col p-5">
+      <p ng-show="templateText">Mensagem a ser disparada:</p>
+      <p>{{templateText}}</p>
+    </section>
+
+  </div>
+</div>
